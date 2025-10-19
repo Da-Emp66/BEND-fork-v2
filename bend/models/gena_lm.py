@@ -30,33 +30,33 @@ from packaging import version
 from torch import nn
 from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
-from transformers.activations import ACT2FN
-from transformers.file_utils import (
-    ModelOutput,
-    add_code_sample_docstrings,
-    add_start_docstrings,
-    add_start_docstrings_to_model_forward,
-    replace_return_docstrings,
-)
-from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-    BaseModelOutputWithPoolingAndCrossAttentions,
-    CausalLMOutputWithCrossAttentions,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    NextSentencePredictorOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
-    TokenClassifierOutput,
-)
-from transformers.modeling_utils import (
-    PreTrainedModel,
-    # apply_chunking_to_forward,
-    find_pruneable_heads_and_indices,
-    prune_linear_layer,
-)
+# from transformers.activations import ACT2FN
+# from transformers.file_utils import (
+#     ModelOutput,
+#     add_code_sample_docstrings,
+#     add_start_docstrings,
+#     add_start_docstrings_to_model_forward,
+#     replace_return_docstrings,
+# )
+# from transformers.modeling_outputs import (
+#     BaseModelOutputWithPastAndCrossAttentions,
+#     BaseModelOutputWithPoolingAndCrossAttentions,
+#     CausalLMOutputWithCrossAttentions,
+#     MaskedLMOutput,
+#     MultipleChoiceModelOutput,
+#     NextSentencePredictorOutput,
+#     QuestionAnsweringModelOutput,
+#     SequenceClassifierOutput,
+#     TokenClassifierOutput,
+# )
+# from transformers.modeling_utils import (
+#     PreTrainedModel,
+#     # apply_chunking_to_forward,
+#     find_pruneable_heads_and_indices,
+#     prune_linear_layer,
+# )
 from transformers.utils import logging
-from transformers.models.bert.configuration_bert import BertConfig
+# from transformers.models.bert.configuration_bert import BertConfig
 
 
 logger = logging.get_logger(__name__)
