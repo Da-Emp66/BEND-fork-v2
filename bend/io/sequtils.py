@@ -106,13 +106,21 @@ class Fasta():
 
 
 
-def embed_from_bed(bed, reference_fasta, embedder, 
-                    output_path,
-                   hdf5_file= None,
-                   chunk_size = None, chunk: int = None, 
-                   upsample_embeddings = False,
-                    read_strand = False, label_column_idx=6, 
-                  label_depth=None, split = None, flank = 0):
+def embed_from_bed(
+    bed,
+    reference_fasta,
+    embedder,
+    output_path,
+    hdf5_file= None,
+    chunk_size = None,
+    chunk: int = None,
+    upsample_embeddings = False,
+    read_strand = False,
+    label_column_idx=6, 
+    label_depth=None,
+    split = None,
+    flank = 0,
+):
     fasta = Fasta(reference_fasta)
     f = pd.read_csv(bed, header = 'infer', sep = '\t', low_memory=False)
     # open hdf5 file 
@@ -152,8 +160,11 @@ def embed_from_bed(bed, reference_fasta, embedder,
             labels = list(map(int, labels.split(','))) if isinstance(labels, str) else [] # if no label for sample
             labels = multi_hot(labels, label_depth)
         # get sequence
+        # print(chrom, start, end, strand, flank)
+        # if start == end: end += 1
         sequence = fasta.fetch(chrom, start, end, strand = strand, flank = flank) # categorical labels
         # embed sequence
+        # print(sequence)
         sequence_embed = embedder(sequence, upsample_embeddings = upsample_embeddings)
         if sequence_embed.shape[1] != len(sequence):
             print(f'Embedding length does not match sequence length ({sequence_embed.shape[1]} != {len(sequence)} : {n} {chrom}:{start}-{end}{strand})')

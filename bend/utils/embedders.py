@@ -332,7 +332,7 @@ class NucleotideTransformerEmbedder(BaseEmbedder):
             computing the loss.
             Defaults to False.
         """
-
+        print("Loading NucleotideTransformerEmbedder...")
         if return_logits and return_loss:
             raise ValueError('Only one of return_logits and return_loss can be True.')
 
@@ -349,7 +349,9 @@ class NucleotideTransformerEmbedder(BaseEmbedder):
             self.max_seq_len = 5994 # "model_max_length": 1000, 6-mer --> 6000
             self.max_tokens = 1000
             self.is_v2 = False
+        print("Instantiated model. Moving to GPU...")
         self.model.to(device)
+        print("Model moved to GPU.")
         self.model.eval()
 
         self.return_logits = return_logits
@@ -384,7 +386,7 @@ class NucleotideTransformerEmbedder(BaseEmbedder):
                 s_chunks = [s[chunk : chunk + self.max_seq_len] for chunk in  range(0, len(s), self.max_seq_len)] # split into chunks 
                 embedded_seq = []
                 for n_chunk, chunk in enumerate(s_chunks): # embed each chunk
-                    tokens_ids = self.tokenizer(chunk, return_tensors = 'pt')['input_ids'].int().to(device)
+                    tokens_ids = self.tokenizer(chunk, return_tensors = 'pt')['input_ids'].int().to(device) #  padding="max_length",
                     if len(tokens_ids[0]) > self.max_tokens: # too long to fit into the model
                         split = torch.split(tokens_ids, self.max_tokens, dim=-1)
                         if self.return_logits:
@@ -508,8 +510,9 @@ class AWDLSTMEmbedder(BaseEmbedder):
         embeddings = []
         with torch.no_grad():
             for s in tqdm(sequences, disable=disable_tqdm):
-
+                print(f"EMBEDDING SEQUENCE >{s}<")
                 input_ids = self.tokenizer(s, return_tensors="pt", return_attention_mask=False, return_token_type_ids=False)["input_ids"]
+                print(f"INPUT IDS {input_ids}")
                 input_ids = input_ids.to(device)
                 embedding = self.model(input_ids=input_ids).last_hidden_state
                 

@@ -1,5 +1,5 @@
 defaults:
-  - datadims : [label_dims,embedding_dims,seq_lengths, downstream_downsample]
+  - datadims : [label_dims,embedding_dims,seq_lengths,downstream_downsample,dimensions/datadims]
   #- hydra : multirun
   #- override hydra/launcher: joblib # ability to launch jobs in parallel fashion
   - _self_
@@ -20,7 +20,7 @@ hydra :
              nt_transformer_1000g,
              dnabert2,
              onehot, 
-             awdlstm,
+             awd_lstm,
              nt_transformer_v2_500m,
              grover
              #hyenadna-small-32k,
@@ -36,8 +36,8 @@ hydra :
 
 chunk_size : 50000
 chunk : null # can be given as a list of chunks to embed 
-data_dir : ./data/
-embedders_dir : ./pretrained_models/
+data_dir : ./data
+embedders_dir : ./pretrained_models
 splits : null
 model : nt_transformer_1000g
 task : gene_finding
@@ -77,9 +77,9 @@ hyenadna-medium-450k:
 resnetlm : 
   _target_ : bend.utils.embedders.ConvNetEmbedder
   model_path : ${embedders_dir}/resnetlm/
-awdlstm : 
+awd_lstm : 
   _target_ : bend.utils.embedders.AWDLSTMEmbedder
-  model_path : ${embedders_dir}/awdlstm/
+  model_path : ${embedders_dir}/awd_lstm/
 nt_transformer_ms :
   _target_ : bend.utils.embedders.NucleotideTransformerEmbedder
   model_name : InstaDeepAI/nucleotide-transformer-2.5b-multi-species
@@ -116,7 +116,10 @@ enhancer_annotation:
 variant_effects:
   reference_fasta : ${data_dir}/genomes/GRCh38.primary_assembly.genome.fa
   bed : ${data_dir}/variant_effects/variant_effects.bed
+  # bed : ${data_dir}/variant_effects/variant_effects_disease.bed
   read_strand : false
+  # hdf5_file : null
+  # label_depth: ${datadims.dimensions.datadims.variant_effects_label_dim}
 histone_modification:
   bed : ${data_dir}/histone_modification/histone_modification.bed
   reference_fasta : ${data_dir}/genomes/GRCh38.primary_assembly.genome.fa
