@@ -147,7 +147,7 @@ def embed_from_bed(
     buffer_size=5000
 
     sink = wds.TarWriter(output_path, compress=True)
-    for n, line in tqdm(f.iterrows(), total=len(f), desc='Embedding sequences'):
+    for n, line in tqdm(f.iterrows(), total=len(f), desc='Embedding sequences', position=0, leave=True):
         # get bed row
         if read_strand:
             chrom, start, end, strand = line.iloc[0], int(line.iloc[1]), int(line.iloc[2]), line.iloc[strand_column_idx]
