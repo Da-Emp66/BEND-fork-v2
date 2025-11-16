@@ -161,10 +161,13 @@ def embed_from_bed(
             labels = multi_hot(labels, label_depth)
         # get sequence
         # print(chrom, start, end, strand, flank)
-        # if start == end: end += 1
+        if start == end:
+            start = start - 256
+            end = end + 256
+        # print(chrom, start, end, strand, flank)
         sequence = fasta.fetch(chrom, start, end, strand = strand, flank = flank) # categorical labels
-        # embed sequence
         # print(sequence)
+        # embed sequence
         sequence_embed = embedder(sequence, upsample_embeddings = upsample_embeddings)
         if sequence_embed.shape[1] != len(sequence):
             print(f'Embedding length does not match sequence length ({sequence_embed.shape[1]} != {len(sequence)} : {n} {chrom}:{start}-{end}{strand})')
