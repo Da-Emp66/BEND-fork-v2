@@ -188,6 +188,6 @@ def embed_from_bed(
 def get_splits(bed):
     #header = 'infer' if has_header(bed) else None
     f = pd.read_csv(bed, header = 'infer', sep = '\t')
-    splits = f["split"].unique().tolist() # splits should be in last column
+    splits = f["split"].unique().tolist()
     return splits
         
