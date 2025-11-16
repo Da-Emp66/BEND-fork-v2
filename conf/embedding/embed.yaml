@@ -115,11 +115,11 @@ enhancer_annotation:
   read_strand : false
 variant_effects:
   reference_fasta : ${data_dir}/genomes/GRCh38.primary_assembly.genome.fa
-  bed : ${data_dir}/variant_effects/variant_effects.bed
-  # bed : ${data_dir}/variant_effects/variant_effects_disease.bed
+  bed : ${data_dir}/variant_effects/variant_effects_disease.bed
   read_strand : false
+  # bed : ${data_dir}/variant_effects/variant_effects_disease.bed
   # hdf5_file : null
-  # label_depth: ${datadims.dimensions.datadims.variant_effects_label_dim}
+  label_depth: ${datadims.dimensions.datadims.variant_effects_label_dim}
 histone_modification:
   bed : ${data_dir}/histone_modification/histone_modification.bed
   reference_fasta : ${data_dir}/genomes/GRCh38.primary_assembly.genome.fa
