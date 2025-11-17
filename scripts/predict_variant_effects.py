@@ -5,6 +5,7 @@ sequence. The variant sequence is obtained by replacing the reference nucleotide
 with the variant nucleotide at the variant position.
 '''
 import argparse
+import os
 from bend.utils import embedders, Annotation
 from tqdm.auto import tqdm
 from scipy import spatial
@@ -72,9 +73,8 @@ def main():
 
     genome_annotation.annotation['distance'] = None
 
+    os.makedirs(os.path.dirname(args.out_file), exist_ok=True)
     for index, row in tqdm(genome_annotation.annotation.iterrows()):
-
-
         # middle_point = row['start'] + 256
         # index the right embedding with dna[len(dna)//2]
         dna = genome_annotation.get_dna_segment(index = index)
@@ -92,12 +92,7 @@ def main():
         embedding_wt, embedding_alt = embedder.embed([dna, dna_alt], **kwargs)
         d = spatial.distance.cosine(embedding_alt[0, args.embedding_idx], embedding_wt[0, args.embedding_idx])
         genome_annotation.annotation.loc[index, 'distance'] = d
-
-
-    genome_annotation.annotation.to_csv(args.out_file)
-
-
-
+        genome_annotation.annotation.to_csv(args.out_file)
 
 if __name__ == '__main__':
     main()
