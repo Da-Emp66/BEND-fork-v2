@@ -10,9 +10,7 @@ from bend.utils import embedders, Annotation
 from tqdm.auto import tqdm
 from scipy import spatial
 
-
 def main():
-
     parser = argparse.ArgumentParser('Compute embeddings')
     parser.add_argument('bed_file', type=str, help='Path to the bed file')
     parser.add_argument('out_file', type=str, help='Path to the output file')
@@ -23,7 +21,7 @@ def main():
     parser.add_argument('--extra_context', type=int, default=256, help='Number of extra nucleotides to include on each side of the sequence')
     parser.add_argument('--kmer', type=int, default=3, help = 'Kmer size for the DNABERT model')
     parser.add_argument('--embedding_idx', type=int, default=0, help = 'Index of the embedding to use for computing the distance')
-
+    parser.add_argument('--maximum_sequences_per_categorical_cls', type=int, default=-1, help = 'For models that take a long time to embed, limit the number of sequences to embed.')
     args = parser.parse_args()
 
     extra_context_left = args.extra_context
@@ -62,19 +60,23 @@ def main():
     else:
         raise ValueError('Model not supported')
     
-
+    variant_types_already_completed = {}
     # load the bed file
     genome_annotation = Annotation(args.bed_file, reference_genome=args.genome)
-
-
     # extend the segments if necessary
     if args.extra_context > 0:
         genome_annotation.extend_segments(extra_context_left=extra_context_left, extra_context_right=extra_context_right)
-
+    # Create distance column and remove any previous cosine distances, if present
     genome_annotation.annotation['distance'] = None
-
+    # Create the directory where the results file will be stored
     os.makedirs(os.path.dirname(args.out_file), exist_ok=True)
     for index, row in tqdm(genome_annotation.annotation.iterrows()):
+        key = f"{row['Consequence']}_{row['label']}"
+        if args.maximum_sequences_per_categorical_cls != -1 \
+            and variant_types_already_completed.get(key, 0) >= args.maximum_sequences_per_categorical_cls:
+            continue
+        else:
+            variant_types_already_completed[key] = variant_types_already_completed.get(key, 0) + 1
         # middle_point = row['start'] + 256
         # index the right embedding with dna[len(dna)//2]
         dna = genome_annotation.get_dna_segment(index = index)
@@ -88,7 +90,7 @@ def main():
         else:
             raise ValueError('Not implemented')
         dna_alt = ''.join(dna_alt)
-
+        # Compute the cosine distance and update the data CSV
         embedding_wt, embedding_alt = embedder.embed([dna, dna_alt], **kwargs)
         d = spatial.distance.cosine(embedding_alt[0, args.embedding_idx], embedding_wt[0, args.embedding_idx])
         genome_annotation.annotation.loc[index, 'distance'] = d
