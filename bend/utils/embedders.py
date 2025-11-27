@@ -25,7 +25,6 @@ import os
 from bend.models.awd_lstm import AWDLSTMModelForInference
 from bend.models.dilated_cnn import ConvNetModel
 from bend.models.gena_lm import BertModel as GenaLMBertModel
-from bend.models.hyena_dna import HyenaDNAPreTrainedModel, CharacterTokenizer
 from bend.models.dnabert2 import BertModel as DNABert2BertModel
 from bend.models.dnabert2 import BertForMaskedLM as DNABert2BertForMaskedLM
 from bend.utils.download import download_model, download_model_zenodo
@@ -708,6 +707,7 @@ class GENALMEmbedder(BaseEmbedder):
 class HyenaDNAEmbedder(BaseEmbedder):
     '''Embed using the HyenaDNA model https://arxiv.org/abs/2306.15794'''
     def load_model(self, model_path = 'pretrained_models/hyenadna/hyenadna-tiny-1k-seqlen', return_logits: bool=False, return_loss: bool=False, **kwargs):
+        from bend.models.hyena_dna import HyenaDNAPreTrainedModel, CharacterTokenizer
         # '''Load the model from the checkpoint path
         # 'hyenadna-tiny-1k-seqlen'   
         # 'hyenadna-small-32k-seqlen'
